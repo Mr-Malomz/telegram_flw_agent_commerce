@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.env
+agentic-commerce-perfume-implementation-plan.md
+article.md
