@@ -5,6 +5,12 @@ import crypto from "crypto";
 
 const router = Router();
 
+const sanitizeName = (name: string | null) => {
+  if (!name) return null;
+  const clean = name.replace(/[^a-zA-Z\s,.'-]/g, "").trim();
+  return clean.length >= 2 ? clean : null;
+};
+
 router.post("/", async (req, res) => {
   const { order_id } = req.body;
 
@@ -20,9 +26,12 @@ router.post("/", async (req, res) => {
   let customerId = order.users.flw_customer_id;
 
   if (!customerId) {
+    const firstName = sanitizeName(order.users.first_name) || "Customer";
+    const lastName = sanitizeName(order.users.username) || "User";
+
     const customerRes = await createFlwCustomer(
-      order.users.first_name || "Customer",
-      order.users.username || "User",
+      firstName,
+      lastName,
       `${order.users.telegram_id}@telegram.user`,
       crypto.randomUUID()
     );
